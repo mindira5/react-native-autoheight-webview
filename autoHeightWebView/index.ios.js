@@ -33,6 +33,7 @@ export default class AutoHeightWebView extends PureComponent {
         onLoad: PropTypes.func,
         onLoadStart: PropTypes.func,
         onLoadEnd: PropTypes.func,
+        onMessage: PropTypes.func,
         onShouldStartLoadWithRequest: PropTypes.func,
         // add web/files... to project root
         files: PropTypes.arrayOf(PropTypes.shape({
@@ -52,6 +53,7 @@ export default class AutoHeightWebView extends PureComponent {
     constructor(props) {
         super(props);
         this.handleNavigationStateChange = this.handleNavigationStateChange.bind(this);
+        this.onMessage = this.onMessage.bind(this);
         if (this.props.enableAnimation) {
             this.opacityAnimatedValue = new Animated.Value(0);
         }
@@ -114,6 +116,13 @@ export default class AutoHeightWebView extends PureComponent {
         }
     }
 
+    onMessage(e) {
+      if (this.props.onMessage) {
+        const messageObj = JSON.parse(e.nativeEvent.data);
+        this.props.onMessage(messageObj);
+      }
+    }
+
     handleNavigationStateChange(navState) {
         const height = Number(navState.title);
         if (height && height !== this.state.height) {
@@ -148,6 +157,7 @@ export default class AutoHeightWebView extends PureComponent {
                     onLoad={onLoad}
                     onLoadStart={onLoadStart}
                     onLoadEnd={onLoadEnd}
+                    onMessage={this.onMessage}
                     onShouldStartLoadWithRequest={onShouldStartLoadWithRequest}
                     style={Styles.webView}
                     injectedJavaScript={script + customScript}
@@ -175,7 +185,7 @@ const Styles = StyleSheet.create({
 
 const BaseScript =
     `
-    ; 
+    ;
     (function () {
         var i = 0;
         var height = 0;
@@ -200,7 +210,7 @@ const BaseScript =
 
 const IframeBaseScript =
     `
-    ; 
+    ;
     (function () {
         var i = 0;
         var height = 0;
