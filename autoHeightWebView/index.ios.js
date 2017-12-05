@@ -153,6 +153,7 @@ export default class AutoHeightWebView extends PureComponent {
                 height: height + heightOffset,
             }, style]}>
                 <WebView
+                    {...this.props}
                     onError={onError}
                     onLoad={onLoad}
                     onLoadStart={onLoadStart}
