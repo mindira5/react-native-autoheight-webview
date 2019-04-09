@@ -114,12 +114,13 @@ export default class AutoHeightWebView extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    // injectedJavaScript only works when webview reload (source changed)
+    // injectedJavaScript only works when webview reload (source changed or layout change)
+    const isLayoutChanged = nextProps.isTablet != this.props.isTablet;
     if (
       Immutable.is(
         Immutable.fromJS(this.props.source),
         Immutable.fromJS(nextProps.source)
-      )
+      ) && !isLayoutChanged
     ) {
       return;
     } else {
